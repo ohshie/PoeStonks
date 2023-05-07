@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoeStonks", "PoeStonks\PoeStonks.csproj", "{B10D237D-BDC4-41B1-9CFC-6414A0D5F96B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B10D237D-BDC4-41B1-9CFC-6414A0D5F96B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B10D237D-BDC4-41B1-9CFC-6414A0D5F96B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B10D237D-BDC4-41B1-9CFC-6414A0D5F96B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B10D237D-BDC4-41B1-9CFC-6414A0D5F96B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

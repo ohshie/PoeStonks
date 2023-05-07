@@ -1,0 +1,27 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="PoeStonks.MainWindow"
+        Title="PoeStonks">
+        <Grid ColumnDefinitions="Auto,*" RowDefinitions="*">
+                
+                <Grid 
+                        Grid.Row="0"
+                        ColumnDefinitions="*"
+                        RowDefinitions="*"
+                        ZIndex="1">
+                        
+                        <Button Grid.Column="0" Content="fetch" HorizontalAlignment="Center" Click="Button_FetchItemsFromPoeNinja"></Button>
+                        
+                </Grid>
+                
+                <Grid Grid.Column="1">
+                        <ListBox Background="darkgray">
+                                <ListBoxItem></ListBoxItem>
+                        </ListBox>
+                </Grid>
+                
+        </Grid>
+</Window>
