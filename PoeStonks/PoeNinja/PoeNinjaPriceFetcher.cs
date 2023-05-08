@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,14 +12,14 @@ namespace PoeStonks.PoeNinja;
 
 public class PoeNinjaPriceFetcher
 {
-    HttpClient httpClient = new();
-    
-    private string BaseNinjaUrl = "https://poe.ninja/api/data/";
+    readonly HttpClient _httpClient = new();
 
-    private List<AllPoeItems> _listOfAllItems = new();
+    private readonly string _baseNinjaUrl = "https://poe.ninja/api/data/";
+
+    private List<PoeItem> _listOfAllItems = new();
     private DbOperations _dbOperations = new();
     
-    public async Task FetchPricesFromNinja()
+    public async Task<List<PoeItem>> FetchPricesFromNinja()
     {
         List<Task> fetchinFromPoeNinja = new List<Task>();
 
@@ -31,42 +31,63 @@ public class PoeNinjaPriceFetcher
         }
 
         await Task.WhenAll(fetchinFromPoeNinja);
+        
         Console.WriteLine("done");
         
         await _dbOperations.AddOrUpdateNinjaData(_listOfAllItems);
+
+        DbToAllItemsDisplay dbToAllItemsDisplay = new();
         
+        List<PoeItem> itemsToDisplay = dbToAllItemsDisplay.FetchItemsToDisplayInitialOrAfterUpdate(50);
         Console.WriteLine("done");
+        return itemsToDisplay;
     }
 
     private async Task GetJsonFromNinja(string ninjaUrl, string itemType)
     {
-        HttpResponseMessage responseMessage = await httpClient.GetAsync(ninjaUrl);
+        HttpResponseMessage responseMessage = await _httpClient.GetAsync(ninjaUrl);
 
         if (responseMessage.IsSuccessStatusCode)
         {
             string content = await responseMessage.Content.ReadAsStringAsync();
             var json = JsonSerializer.Deserialize<NinjaResponse>(content);
             
-            List<AllPoeItems> newItem;
+            List<PoeItem> newItem;
             
-            if (json.Lines.Count > 0 && json.Lines[0].CurrencyTypeName != null)
+            if (json?.Lines?.Count > 0 && json.Lines[0].CurrencyTypeName != null)
             {
-                newItem = json.Lines.ConvertAll(j => new AllPoeItems()
+                newItem = json.Lines.ConvertAll(j  =>
                 {
-                    ItemName = j.CurrencyTypeName,
-                    ChaosValue = j.ChaosEquivalent,
-                    ListingCount = j.ListingCount,
-                    ItemType = itemType
+                    var currencyDetail = json.CurrencyDetails?.FirstOrDefault(cd => cd.Name == j.CurrencyTypeName);
+                    var iconUrl = currencyDetail?.itemIconUrl ?? string.Empty;
+                    
+                    return new PoeItem()
+                    {
+                        Id = j.Id!,
+                        ItemName = j.CurrencyTypeName!,
+                        ChaosEquivalent = j.ChaosEquivalent,
+                        ItemType = itemType,
+                        ImgUrl = iconUrl,
+                        SparkLine = j.CurrencySparkLine.NinjaSparkLineData.ConvertAll(sl => new SparkLine()
+                        {
+                            SparkLineData = sl
+                        })
+                    };
                 });
             }
             else
             {
-                newItem = json.Lines.ConvertAll(j => new AllPoeItems()
+                newItem = json.Lines.ConvertAll(j => new PoeItem()
                 {
-                    ItemName = j.Name,
-                    ChaosValue = j.ChaosValue,
-                    ListingCount = j.ListingCount,
-                    ItemType = itemType
+                    Id = j.Id!,
+                    ItemName = j.Name!,
+                    ChaosEquivalent = j.ChaosValue,
+                    ItemType = itemType,
+                    ImgUrl = j.itemIconUrl,
+                    SparkLine = j.ItemSparkLine.NinjaSparkLineData.ConvertAll(sl => new SparkLine()
+                    {
+                        SparkLineData = sl
+                    })
                 });
             }
 
@@ -84,11 +105,11 @@ public class PoeNinjaPriceFetcher
             string urlBuilder;
             if (ninjaType is Currency or Fragment)
             {
-                urlBuilder = $"{BaseNinjaUrl}currencyoverview?league=Crucible&type={ninjaType.ToString()}";
+                urlBuilder = $"{_baseNinjaUrl}currencyoverview?league=Crucible&type={ninjaType.ToString()}";
                 ninjaUrlList.Add((urlBuilder, ninjaType.ToString()));
                 continue;
             }
-            urlBuilder = $"{BaseNinjaUrl}itemoverview?league=Crucible&type={ninjaType.ToString()}";
+            urlBuilder = $"{_baseNinjaUrl}itemoverview?league=Crucible&type={ninjaType.ToString()}";
             ninjaUrlList.Add((urlBuilder, ninjaType.ToString()));
         }
 
@@ -99,28 +120,80 @@ public class PoeNinjaPriceFetcher
 class NinjaResponse
 {
     [JsonPropertyName("lines")] 
-    public List<NinjaJsonStructure> Lines { get; set; }
+    public List<NinjaJsonStructure>? Lines { get; set; }
+    [JsonPropertyName("currencyDetails")] 
+    public List<NinjaJsonStructure>? CurrencyDetails { get; set; }
 }
 
 class NinjaJsonStructure
 {
+    [JsonPropertyName("detailsId")]
+    public string? Id { get; set; }
     [JsonPropertyName("currencyTypeName")]
-    public string CurrencyTypeName { get; set; }
+    public string? CurrencyTypeName { get; set; }
+    
+    
+    public NinjaJsonCurrencyUrl CurrencyIconUrl { get; set; }
+    
+    [JsonPropertyName("icon")] 
+    public string itemIconUrl { get; set; }
+    
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
     [JsonPropertyName("chaosValue")]
     public double ChaosValue { get; set; }
-    [JsonPropertyName("listingCount")]
-    public int ListingCount { get; set; }
     [JsonPropertyName("chaosEquivalent")]
     public double ChaosEquivalent { get; set; }
+    [JsonPropertyName("receiveSparkLine")] 
+    public NinjaJsonSparkLine CurrencySparkLine { get; set; }
+    [JsonPropertyName("sparkline")] 
+    public NinjaJsonSparkLine ItemSparkLine { get; set; }
 }
 
-public class AllPoeItems
+class NinjaJsonSparkLine
 {
-    public string ItemName { get; set; }
-    public double ChaosValue { get; set; }
-    public int ListingCount { get; set; }
-    public string ItemType { get; set; }
+    [JsonPropertyName("data")] 
+    [JsonConverter(typeof(DoubleListWithNullHandlingConverter))]
+    public List<double>? NinjaSparkLineData { get; set; }
+}
+
+class NinjaJsonCurrencyUrl
+{
+    [JsonPropertyName("icon")] 
+    public string IconUrl { get; set; }
+}
+
+class DoubleListWithNullHandlingConverter : JsonConverter<List<double>>
+{
+    public override List<double>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        List<double> result = new List<double>();
+
+        if (reader.TokenType == JsonTokenType.StartArray)
+        {
+            while (reader.Read())
+            {
+                if (reader.TokenType == JsonTokenType.EndArray)
+                {
+                    break;
+                }
+
+                if (reader.TokenType == JsonTokenType.Number)
+                {
+                    result.Add(reader.GetDouble());
+                }
+                else if (reader.TokenType == JsonTokenType.Null)
+                {
+                    result.Add(0);
+                }
+            }
+        }
+        
+        return result;
+    }
+
+    public override void Write(Utf8JsonWriter writer, List<double> value, JsonSerializerOptions options)
+    {
+    }
 }
 

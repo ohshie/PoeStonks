@@ -1,10 +1,21 @@
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
 namespace PoeStonks.Db;
 
 public class PoeItem
 {
-    public int Id { get; set; }
-    public string ItemType { get; set; }
-    public string ItemName { get; set; }
-    public int ListingAmount { get; set; }
+    public string? Id { get; set; }
+    public string? ImgUrl { get; set; }
+    public string? ItemType { get; set; }
+    public string? ItemName { get; set; }
     public double ChaosEquivalent { get; set; }
+    public List<SparkLine>? SparkLine { get; set; } = new();
+}
+
+public class SparkLine
+{
+    [Key]
+    public int Id { get; set; }
+    public double SparkLineData { get; set; }
 }

@@ -22,7 +22,7 @@ public enum NinjaDirectories
     DeliriumOrb,
     Invitation,
     Scarab,
-    BaseType,
+    //BaseType,
     Fossil,
     Resonator,
     HelmetEnchant,

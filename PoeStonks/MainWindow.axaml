@@ -4,7 +4,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="PoeStonks.MainWindow"
-        Title="PoeStonks">
+        Title="PoeStonks"
+        Background="#1E1E24">
+        
+        <!-->Main Styles<!-->
+        
+        <Window.Styles>
+                
+                <Style Selector="ListBox.NinjaItemDisplay">
+                        <Setter Property="Background" Value="#2A2A32"></Setter>
+                        <Setter Property="BorderBrush" Value="#AA7DCE"/>
+                        <Setter Property="BorderThickness" Value="0,0,2,0"/>
+                        <Setter Property="FontFamily" Value="Helvetica"/>
+                        <Setter Property="Padding" Value="2,2,2,2"/>
+                        <Setter Property="Margin" Value="2,2,2,2"/>
+                        <Setter Property="IsHitTestVisible" Value="False"/>
+                        <Setter Property="Focusable" Value="False"/>
+                </Style>
+                <Style Selector="ListBoxItem">
+                        <Setter Property="Foreground" Value="#EAF2EF"/>
+                        <Setter Property="FontFamily" Value="Helvetica"/>
+                </Style>
+                
+        </Window.Styles>
+        
         <Grid ColumnDefinitions="Auto,*" RowDefinitions="*">
                 
                 <Grid 
@@ -17,10 +40,30 @@
                         
                 </Grid>
                 
-                <Grid Grid.Column="1">
-                        <ListBox Background="darkgray">
-                                <ListBoxItem></ListBoxItem>
-                        </ListBox>
+                <Grid Grid.Column="1"
+                      ColumnDefinitions="*,*,*"
+                      RowDefinitions="Auto,*">
+                        
+                        <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" 
+                              Height="20"
+                              ColumnDefinitions="*,*,*">
+                                <TextBlock Foreground="#EAF2EF" FontFamily="Helvetica" Grid.Column="0" TextAlignment="Center">Category</TextBlock>
+                                <TextBlock Foreground="#EAF2EF" FontFamily="Helvetica" Grid.Column="1" TextAlignment="Center">Item name</TextBlock>
+                                <TextBlock Foreground="#EAF2EF" FontFamily="Helvetica" Grid.Column="2" TextAlignment="Center">Chaos value</TextBlock>
+                        </Grid>
+                        
+                        <ScrollViewer Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3">
+                                <Grid ColumnDefinitions="Auto,*,*,*">
+                                        <ListBox Grid.Row="1" Grid.Column="0" Classes="NinjaItemDisplay" x:Name="DisplayItemIcon"
+                                                 ScrollViewer.VerticalScrollBarVisibility="Disabled" Width="50"/>
+                                        <ListBox Grid.Row="1" Grid.Column="1" Classes="NinjaItemDisplay" x:Name="DisplayItemCategory"
+                                                 ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+                                        <ListBox Grid.Row="1" Grid.Column="2" Classes="NinjaItemDisplay" x:Name="DisplayItemName"
+                                                ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+                                        <ListBox Grid.Row="1" Grid.Column="3" Classes="NinjaItemDisplay" x:Name="DisplayItemChaosValue" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+                                </Grid>
+                        </ScrollViewer>
+                        
                 </Grid>
                 
         </Grid>
