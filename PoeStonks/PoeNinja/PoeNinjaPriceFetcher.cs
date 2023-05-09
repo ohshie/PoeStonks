@@ -12,12 +12,20 @@ namespace PoeStonks.PoeNinja;
 
 public class PoeNinjaPriceFetcher
 {
+    private MainWindow MainWindow { get; set; }
+
+    public PoeNinjaPriceFetcher(MainWindow mainWindow)
+    {
+        MainWindow = mainWindow;
+        _dbOperations = new DbOperations(mainWindow);
+    }
+
     readonly HttpClient _httpClient = new();
 
     private readonly string _baseNinjaUrl = "https://poe.ninja/api/data/";
 
     private List<PoeItem> _listOfAllItems = new();
-    private DbOperations _dbOperations = new();
+    private DbOperations _dbOperations;
     
     public async Task<List<PoeItem>> FetchPricesFromNinja()
     {
@@ -31,15 +39,19 @@ public class PoeNinjaPriceFetcher
         }
 
         await Task.WhenAll(fetchinFromPoeNinja);
-        
-        Console.WriteLine("done");
+
+        // bottom log
+        MainWindow.PseudoLog("Received poe.ninja data");
         
         await _dbOperations.AddOrUpdateNinjaData(_listOfAllItems);
 
         DbToAllItemsDisplay dbToAllItemsDisplay = new();
         
         List<PoeItem> itemsToDisplay = dbToAllItemsDisplay.FetchItemsToDisplayInitialOrAfterUpdate(50);
-        Console.WriteLine("done");
+        
+        // bottom log
+        MainWindow.PseudoLog("Prices updated.");
+        
         return itemsToDisplay;
     }
 
@@ -91,7 +103,9 @@ public class PoeNinjaPriceFetcher
                 });
             }
 
-            Console.WriteLine(itemType);
+            // bottom log
+            MainWindow.PseudoLog($"{itemType} data fetched from poe.ninja");
+            
             _listOfAllItems.AddRange(newItem);
         }
     }
@@ -192,8 +206,6 @@ class DoubleListWithNullHandlingConverter : JsonConverter<List<double>>
         return result;
     }
 
-    public override void Write(Utf8JsonWriter writer, List<double> value, JsonSerializerOptions options)
-    {
-    }
+    public override void Write(Utf8JsonWriter writer, List<double> value, JsonSerializerOptions options) {}
 }
 

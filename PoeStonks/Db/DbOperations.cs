@@ -9,71 +9,79 @@ namespace PoeStonks.Db;
 
 public class DbOperations
 {
+
+    public DbOperations(MainWindow mainWindow)
+    {
+        MainWindow = mainWindow;
+    }
+
+    protected DbOperations(){}
+
+    public MainWindow MainWindow { get; set; }
+    
     public async Task AddOrUpdateNinjaData(List<PoeItem> freshNinjaItemsList)
     {
         List<PoeItem> itemsAlreadyInDb;
         
-        using (PsDbContext dbContext = new())
-        {
-            Console.WriteLine(DateTime.Now);
-            itemsAlreadyInDb = dbContext.PoeItems.ToList();
-        }
-
-        List<PoeItem> itemsToAdd =
-            freshNinjaItemsList.Except(itemsAlreadyInDb, new DatabaseItemComparerById()).ToList();
-        List<PoeItem> itemsToUpdate = freshNinjaItemsList.Intersect(itemsAlreadyInDb, new DatabaseItemComparerByPrice()).ToList();
-        List<PoeItem> itemsToDelete = itemsAlreadyInDb.Except(freshNinjaItemsList, new DatabaseItemComparerById()).ToList();
+        // bottom log
+        MainWindow.PseudoLog("Database update started");
         
-        if (itemsToDelete.Count > 0)
-        {
-            await RemoveItemsFromDbIfTheyDontExistAnymore(itemsToDelete, itemsAlreadyInDb);
-        }
+            await RemoveItemsFromDbIfTheyDontExistAnymore(freshNinjaItemsList);
+        
+            await UpdateNinjaItemsDb(freshNinjaItemsList);
             
-        if (itemsToUpdate.Count > 0)
-        {
-            await UpdateNinjaItemsDb(itemsToUpdate, freshNinjaItemsList);
-        }
-
-        if (itemsToAdd.Count > 0)
-        {
             using (PsDbContext dbContext = new PsDbContext())
             {
+                itemsAlreadyInDb = dbContext.PoeItems.ToList();
+                
+                List<PoeItem> itemsToAdd =
+                    freshNinjaItemsList.Except(itemsAlreadyInDb, new DatabaseItemComparerById()).ToList();
+                
+                if (itemsToAdd.Count > 0)
+                {
                 dbContext.PoeItems.AddRange(itemsToAdd);
                 await dbContext.SaveChangesAsync(); 
+                }
             }
-        }
-        
-        Console.WriteLine(DateTime.Now);
+            
+        // bottom log
+        MainWindow.PseudoLog("Database update done");;
     }
 
-    private async Task UpdateNinjaItemsDb(List<PoeItem> itemsToUpdateList, List<PoeItem> freshItemsFromNinjaList)
+    private async Task UpdateNinjaItemsDb(List<PoeItem> freshItemsFromNinjaList)
     {
         using (PsDbContext dbContext = new PsDbContext())
         {
-            foreach (var item in itemsToUpdateList)
+            List<PoeItem> itemsAlreadyInDb = dbContext.PoeItems.ToList();
+            List<PoeItem> itemsToUpdateList = freshItemsFromNinjaList.Intersect(itemsAlreadyInDb, new DatabaseItemComparerByPrice()).ToList();
+            
+            foreach (var item in itemsAlreadyInDb)
             {
-                PoeItem? itemToUpdate = freshItemsFromNinjaList.FirstOrDefault(pi => pi.ItemName == item.ItemName);
-                if (itemToUpdate != null)
+                PoeItem? newItemData = itemsToUpdateList.FirstOrDefault(pi => pi.Id == item.Id);
+                if (newItemData != null)
                 {
-                    itemToUpdate.ChaosEquivalent = item.ChaosEquivalent;
+                    item.ChaosEquivalent = newItemData.ChaosEquivalent;
                 }
             }
-            dbContext.PoeItems.UpdateRange(itemsToUpdateList);
+            
+            dbContext.PoeItems.UpdateRange(itemsAlreadyInDb);
             await dbContext.SaveChangesAsync();
         }
     }
 
-    private async Task RemoveItemsFromDbIfTheyDontExistAnymore(List<PoeItem> itemsToRemoveList,
-        List<PoeItem> currentItemsInDb)
+    private async Task RemoveItemsFromDbIfTheyDontExistAnymore(List<PoeItem> freshNinjaItemsList)
     {
         using (PsDbContext dbContext = new PsDbContext())
         {
-            foreach (var item in itemsToRemoveList)
+            List<PoeItem> itemsAlreadyInDb = dbContext.PoeItems.ToList();
+            List<PoeItem> itemsToDelete = itemsAlreadyInDb.Except(freshNinjaItemsList, new DatabaseItemComparerById()).ToList();
+            
+            foreach (var item in itemsToDelete)
             {
-                currentItemsInDb.Remove(item);
+                itemsAlreadyInDb.Remove(item);
             }
                     
-            dbContext.PoeItems.UpdateRange(currentItemsInDb);
+            dbContext.PoeItems.UpdateRange(itemsAlreadyInDb);
             await dbContext.SaveChangesAsync();
         }
     }
