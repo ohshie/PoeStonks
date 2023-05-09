@@ -17,8 +17,7 @@ public class NinjaItemsDisplay
                 MainWindow.PoeItemsName.Add(poeItem.ItemName);
                 MainWindow.PoeItemsCategory.Add(poeItem.ItemType);
                 MainWindow.PoeITemsChaosValue.Add(poeItem.ChaosEquivalent);
-                
-                //MainWindow.PoeItemsImage.Add(poeItem.ImgUrl);
+                MainWindow.NinjaImageTest.Add(poeItem.ImgUrl);
             } 
         }
     }

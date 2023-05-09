@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="AsyncImageLoader.Avalonia" Version="2.4.0" />
         <PackageReference Include="Avalonia" Version="0.10.18" />
         <PackageReference Include="Avalonia.Desktop" Version="0.10.18" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
@@ -34,5 +35,18 @@
         </PackageReference>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
         <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="assets\Images\ninjaLogo.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="assets\Images" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="assets\Images\ninjasLogo.png" />
+      <AvaloniaResource Include="assets\Images\ninjasLogo.png" />
     </ItemGroup>
 </Project>
