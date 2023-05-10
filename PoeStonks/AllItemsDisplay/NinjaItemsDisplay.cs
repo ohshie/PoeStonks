@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using PoeStonks.Db;
 
@@ -16,7 +17,7 @@ public class NinjaItemsDisplay
             {
                 MainWindow.PoeItemsName.Add(poeItem.ItemName);
                 MainWindow.PoeItemsCategory.Add(poeItem.ItemType);
-                MainWindow.PoeITemsChaosValue.Add(poeItem.ChaosEquivalent);
+                MainWindow.PoeITemsChaosValue.Add(Math.Round(poeItem.ChaosEquivalent,0));
                 MainWindow.NinjaImageTest.Add(poeItem.ImgUrl);
             } 
         }

@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Avalonia.Controls;
-using Avalonia.Reactive;
 using Avalonia.Interactivity;
 using PoeStonks.AllItemsDisplay;
 using PoeStonks.Db;
 using PoeStonks.PoeNinja;
+using ReactiveUI;
 
 
 namespace PoeStonks;
@@ -37,8 +32,8 @@ public partial class MainWindow : Window
         InitializeComponent();
         
         DataContext = this;
-        
-        DisplayItemIcon.ItemsSource = PoeItemsName;
+        var test = DisplayItemChaosValue.ItemsSource;
+        DisplayItemName.ItemsSource = PoeItemsName;
         DisplayItemCategory.ItemsSource = PoeItemsCategory;
         DisplayItemChaosValue.ItemsSource = PoeITemsChaosValue;
         DisplayItemIcon.ItemsSource = PoeItemsImage;
