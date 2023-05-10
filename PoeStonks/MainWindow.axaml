@@ -95,13 +95,14 @@
                                                  ScrollViewer.VerticalScrollBarVisibility="Disabled" Width="100"/>
                                         
                                         <StackPanel Grid.Column="2" Orientation="Horizontal" MinWidth="200">
+                                                
                                                 <ListBox Classes="NinjaItemDisplay" 
                                                          x:Name="DisplayItemName"
                                                          ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                                          MaxWidth="200">
                                                 </ListBox>
                                                 
-                                                <ItemsRepeater Grid.Column="1" Classes="NinjaItemDisplay" 
+                                                <ItemsRepeater Classes="NinjaItemDisplayRepeater" 
                                                                x:Name="DisplayItemNinjaIcon"
                                                                MinWidth="20">
                                                         <ItemsRepeater.ItemTemplate>
@@ -116,23 +117,9 @@
                                                         </ItemsRepeater.ItemTemplate>
                                                 </ItemsRepeater>
                                                 
-                                                <!-- <ListBox Grid.Column="1" -->
-                                                <!--          Classes="NinjaItemDisplay" -->
-                                                <!--          x:Name="DisplayItemNinjaIcon" -->
-                                                <!--          ScrollViewer.VerticalScrollBarVisibility="Disabled" -->
-                                                <!--          IsHitTestVisible="True"> -->
-                                                <!--         <ListBox.ItemTemplate> -->
-                                                <!--                 <DataTemplate> -->
-                                                <!--                         <Button Classes="DisplayButton" x:Name="NinjaLinkButton" Height="40" Width="20" Click="Button_OnClick" ZIndex="1"> -->
-                                                <!--                                 <Image Source="assets/Images/ninjasLogo.png" -->
-                                                <!--                                         Stretch="Uniform"/>  -->
-                                                <!--                         </Button> -->
-                                                <!--                 </DataTemplate> -->
-                                                <!--         </ListBox.ItemTemplate> -->
-                                                <!-- </ListBox> -->
                                         </StackPanel>
                                         
-                                        <ListBox Grid.Row="1" Grid.Column="3" 
+                                        <ListBox Grid.Column="3" 
                                                  Classes="NinjaItemDisplay" 
                                                  x:Name="DisplayItemChaosValue" 
                                                  ScrollViewer.VerticalScrollBarVisibility="Disabled"/>

@@ -43,7 +43,7 @@ public partial class MainWindow : Window
         DisplayItemChaosValue.ItemsSource = PoeITemsChaosValue;
         DisplayItemIcon.ItemsSource = PoeItemsImage;
         DisplayItemNinjaIcon.ItemsSource = NinjaImageTest;
-        
+
         _ninjaItemsDisplay.NinjaItemsDisplayFill();
     }
     
