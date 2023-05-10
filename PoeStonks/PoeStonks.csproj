@@ -19,10 +19,13 @@
 
     <ItemGroup>
         <PackageReference Include="AsyncImageLoader.Avalonia" Version="2.4.0" />
-        <PackageReference Include="Avalonia" Version="0.10.18" />
-        <PackageReference Include="Avalonia.Desktop" Version="0.10.18" />
+        <PackageReference Include="Avalonia" Version="11.0.0-preview8" />
+        <PackageReference Include="Avalonia.Controls.ItemsRepeater" Version="11.0.0-preview8" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.0.0-preview8" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.18" />
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.0-preview8" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.0-preview8" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.0-preview8" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
           <PrivateAssets>all</PrivateAssets>
@@ -34,11 +37,6 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
-        <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="assets\Images\ninjaLogo.png" />
     </ItemGroup>
 
     <ItemGroup>
@@ -46,7 +44,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="assets\Images\ninjasLogo.png" />
       <AvaloniaResource Include="assets\Images\ninjasLogo.png" />
     </ItemGroup>
 </Project>

@@ -18,7 +18,7 @@
                         <Setter Property="BorderThickness" Value="0,0,1,0"/>
                         <Setter Property="FontFamily" Value="Helvetica"/>
                         <Setter Property="Padding" Value="2,2,2,2"/>
-                        <Setter Property="Margin" Value="2,2,2,2"/>
+                        <Setter Property="Margin" Value="2,0,0,2"/>
                         <Setter Property="IsHitTestVisible" Value="False"/>
                         <Setter Property="Focusable" Value="False"/>
                 </Style>
@@ -38,6 +38,10 @@
                         <Setter Property="Padding" Value="0"/>
                 </Style>
                 
+                <Style Selector="Button.DisplayButton:pointerover /template/ContentPresenter">
+                        <Setter Property="Background" Value="transparent"></Setter>
+                </Style>
+                
         </Window.Styles>
         
         <Grid ColumnDefinitions="Auto,*" RowDefinitions="*,auto">
@@ -51,13 +55,12 @@
                         <Button Grid.Column="0" Content="fetch" HorizontalAlignment="Center" Click="Button_FetchItemsFromPoeNinja"></Button>
                 </Grid>
                 
-                <Grid Grid.Column="1"
+                <Grid Grid.Row="0" Grid.Column="1"
                       ColumnDefinitions="*,*,*"
                       RowDefinitions="Auto,*">
                         <Panel Grid.ColumnSpan="3">
                                 <Border BorderBrush="#2A2A2A" BorderThickness="1"></Border>
-                                <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" 
-                                      Height="20"
+                                <Grid Height="20"
                                       ColumnDefinitions="Auto,*,*,*">
                                 
                                 <Rectangle Grid.Column="0" Width="40"></Rectangle>
@@ -85,34 +88,49 @@
                         <ScrollViewer Background="#2A2A32">
                                 
                                 <Grid ColumnDefinitions="Auto,Auto,*,*">
-                                        <ListBox Grid.Row="1" Grid.Column="0" Classes="NinjaItemDisplay" x:Name="DisplayItemIcon"
+                                        <ListBox Grid.Column="0" Classes="NinjaItemDisplay" x:Name="DisplayItemIcon"
                                                  ScrollViewer.VerticalScrollBarVisibility="Disabled" Width="50"/>
                                         
-                                        <ListBox Grid.Row="1" Grid.Column="1" Classes="NinjaItemDisplay" x:Name="DisplayItemCategory"
+                                        <ListBox Grid.Column="1" Classes="NinjaItemDisplay" x:Name="DisplayItemCategory"
                                                  ScrollViewer.VerticalScrollBarVisibility="Disabled" Width="100"/>
                                         
-                                        <Grid Grid.Row="1" Grid.Column="2" ColumnDefinitions="*,auto">
-                                                <ListBox Grid.Column="0" 
-                                                         Classes="NinjaItemDisplay" 
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" MinWidth="200">
+                                                <ListBox Classes="NinjaItemDisplay" 
                                                          x:Name="DisplayItemName"
                                                          ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                                         MinWidth="150">
+                                                         MaxWidth="200">
                                                 </ListBox>
-                                                <ListBox Grid.Column="1"
-                                                         Classes="NinjaItemDisplay"
-                                                         x:Name="DisplayItemNinjaIcon"
-                                                         ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                                         IsHitTestVisible="True">
-                                                        <ListBox.ItemTemplate>
+                                                
+                                                <ItemsRepeater Grid.Column="1" Classes="NinjaItemDisplay" 
+                                                               x:Name="DisplayItemNinjaIcon"
+                                                               MinWidth="20">
+                                                        <ItemsRepeater.ItemTemplate>
                                                                 <DataTemplate>
-                                                                        <Button Classes="DisplayButton" x:Name="NinjaLinkButton" Height="40" Width="20" Click="Button_OnClick" ZIndex="1">
+                                                                        <Button Classes="DisplayButton" x:Name="NinjaLinkButton">
                                                                                 <Image Source="assets/Images/ninjasLogo.png"
-                                                                                        Stretch="Uniform"/> 
+                                                                                        Stretch="Uniform"
+                                                                                        Margin="7.4"
+                                                                                        Width="20"/>
                                                                         </Button>
                                                                 </DataTemplate>
-                                                        </ListBox.ItemTemplate>
-                                                </ListBox>
-                                        </Grid>
+                                                        </ItemsRepeater.ItemTemplate>
+                                                </ItemsRepeater>
+                                                
+                                                <!-- <ListBox Grid.Column="1" -->
+                                                <!--          Classes="NinjaItemDisplay" -->
+                                                <!--          x:Name="DisplayItemNinjaIcon" -->
+                                                <!--          ScrollViewer.VerticalScrollBarVisibility="Disabled" -->
+                                                <!--          IsHitTestVisible="True"> -->
+                                                <!--         <ListBox.ItemTemplate> -->
+                                                <!--                 <DataTemplate> -->
+                                                <!--                         <Button Classes="DisplayButton" x:Name="NinjaLinkButton" Height="40" Width="20" Click="Button_OnClick" ZIndex="1"> -->
+                                                <!--                                 <Image Source="assets/Images/ninjasLogo.png" -->
+                                                <!--                                         Stretch="Uniform"/>  -->
+                                                <!--                         </Button> -->
+                                                <!--                 </DataTemplate> -->
+                                                <!--         </ListBox.ItemTemplate> -->
+                                                <!-- </ListBox> -->
+                                        </StackPanel>
                                         
                                         <ListBox Grid.Row="1" Grid.Column="3" 
                                                  Classes="NinjaItemDisplay" 
@@ -124,7 +142,7 @@
                         </Border>
                 </Grid>
                 
-                <Grid ColumnSpan="2" Row="1" Height="25">
+                <Grid ColumnSpan="2" Grid.Column="0" Row="1" Height="25">
                         <TextBlock 
                                 x:Name="ConsoleOutPutTextBlock" 
                                 Text="{Binding ConsoleOutput}" 

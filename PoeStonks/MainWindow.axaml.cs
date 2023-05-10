@@ -4,15 +4,15 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Reactive;
-using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Avalonia.Controls;
+using Avalonia.Reactive;
 using Avalonia.Interactivity;
 using PoeStonks.AllItemsDisplay;
 using PoeStonks.Db;
 using PoeStonks.PoeNinja;
+
 
 namespace PoeStonks;
 
@@ -33,19 +33,18 @@ public partial class MainWindow : Window
         {
             dbContext.Database.EnsureCreated();
         }
+        
         InitializeComponent();
         
         DataContext = this;
-
-        DisplayItemName.Items = PoeItemsName;
-        DisplayItemCategory.Items = PoeItemsCategory;
-        DisplayItemChaosValue.Items = PoeITemsChaosValue;
-        DisplayItemIcon.Items = PoeItemsImage;
-        DisplayItemNinjaIcon.Items = NinjaImageTest;
         
-
+        DisplayItemIcon.ItemsSource = PoeItemsName;
+        DisplayItemCategory.ItemsSource = PoeItemsCategory;
+        DisplayItemChaosValue.ItemsSource = PoeITemsChaosValue;
+        DisplayItemIcon.ItemsSource = PoeItemsImage;
+        DisplayItemNinjaIcon.ItemsSource = NinjaImageTest;
+        
         _ninjaItemsDisplay.NinjaItemsDisplayFill();
-        
     }
     
     private async void Button_FetchItemsFromPoeNinja(object? sender, RoutedEventArgs e)
