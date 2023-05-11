@@ -1,6 +1,6 @@
 namespace PoeStonks.PoeNinja;
 
-public enum NinjaDirectories
+public enum NinjaDirectoriesApi
 {
     Currency,
     Fragment,

@@ -17,7 +17,7 @@ public class DbOperations
 
     protected DbOperations(){}
 
-    public MainWindow MainWindow { get; set; }
+    private MainWindow MainWindow { get; }
     
     public async Task AddOrUpdateNinjaData(List<PoeItem> freshNinjaItemsList)
     {

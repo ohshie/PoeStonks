@@ -20,7 +20,8 @@ public partial class MainWindow : Window
     public static ObservableCollection<string> PoeItemsCategory = new();
     public static ObservableCollection<double> PoeITemsChaosValue = new();
     public static ObservableCollection<Image> PoeItemsImage = new();
-    public static ObservableCollection<string> NinjaImageTest = new();
+    public static ObservableCollection<string> NinjaItemLink = new();
+    public static ObservableCollection<string> NinjaItemIconLink = new();
 
 
     private readonly NinjaItemsDisplay _ninjaItemsDisplay = new();
@@ -35,12 +36,14 @@ public partial class MainWindow : Window
         InitializeComponent();
         
         DataContext = this;
+        
         var test = DisplayItemChaosValue.ItemsSource;
         DisplayItemName.ItemsSource = PoeItemsName;
         DisplayItemCategory.ItemsSource = PoeItemsCategory;
         DisplayItemChaosValue.ItemsSource = PoeITemsChaosValue;
         DisplayItemIcon.ItemsSource = PoeItemsImage;
-        DisplayItemNinjaIcon.ItemsSource = NinjaImageTest;
+        DisplayItemNinjaLink.ItemsSource = NinjaItemLink;
+        DisplayItemIcon.ItemsSource = NinjaItemIconLink;
 
         _ninjaItemsDisplay.NinjaItemsDisplayFill();
     }
@@ -65,34 +68,38 @@ public partial class MainWindow : Window
             string? buttonUrl = button.DataContext?.ToString();
             if (buttonUrl != null)
             {
-                try
-                {
-                    Process.Start(buttonUrl);
-                }
-                catch
-                {
-                    // hack because of this: https://github.com/dotnet/corefx/issues/10361
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        buttonUrl = buttonUrl.Replace("&", "^&");
-                        Process.Start(new ProcessStartInfo(buttonUrl) { UseShellExecute = true });
-                    }
-                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                    {
-                        Process.Start("xdg-open", buttonUrl);
-                    }
-                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                    {
-                        Process.Start("open", buttonUrl);
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                OpenUrlInBrowser(buttonUrl);
             }
         }
     }
-    
+
+    private void OpenUrlInBrowser(string url)
+    {
+        try
+        {
+            Process.Start(url);
+        }
+        catch
+        {
+            // hack because of this: https://github.com/dotnet/corefx/issues/10361
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                url = url.Replace("&", "^&");
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                Process.Start("xdg-open", url);
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                Process.Start("open", url);
+            }
+            else
+            {
+                throw;
+            }
+        }
+    }
 }
 

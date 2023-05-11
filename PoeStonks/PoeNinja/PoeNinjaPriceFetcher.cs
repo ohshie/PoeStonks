@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using PoeStonks.Db;
-using static PoeStonks.PoeNinja.NinjaDirectories;
+using static PoeStonks.PoeNinja.NinjaDirectoriesApi;
 
 namespace PoeStonks.PoeNinja;
 
@@ -31,7 +31,7 @@ public class PoeNinjaPriceFetcher
     {
         List<Task> fetchinFromPoeNinja = new List<Task>();
 
-        List<(string url, string itemType)> ninjaUrlList = CreateNinjaUrls();
+        List<(string url, string itemType)> ninjaUrlList = CreateNinjaTypeUrls();
 
         foreach (var (url, itemType) in ninjaUrlList)
         {
@@ -79,6 +79,7 @@ public class PoeNinjaPriceFetcher
                         ItemName = j.CurrencyTypeName!,
                         ChaosEquivalent = j.ChaosEquivalent,
                         ItemType = itemType,
+                        ItemUrl = CreateNinjaItemUrl(itemType,j.Id!),
                         ImgUrl = iconUrl,
                         SparkLine = j.CurrencySparkLine.NinjaSparkLineData.ConvertAll(sl => new SparkLine()
                         {
@@ -96,6 +97,7 @@ public class PoeNinjaPriceFetcher
                     ChaosEquivalent = j.ChaosValue,
                     ItemType = itemType,
                     ImgUrl = j.itemIconUrl,
+                    ItemUrl = CreateNinjaItemUrl(itemType,j.Id!),
                     SparkLine = j.ItemSparkLine.NinjaSparkLineData.ConvertAll(sl => new SparkLine()
                     {
                         SparkLineData = sl
@@ -109,12 +111,18 @@ public class PoeNinjaPriceFetcher
             _listOfAllItems.AddRange(newItem);
         }
     }
+    
+    private string CreateNinjaItemUrl(string itemType, string itemName)
+    {
+        string itemUrl = $"{baseUrlForItems[Enum.Parse<NinjaDirectoriesApi>(itemType)]}/{itemName}";
+        return itemUrl;
+    }
 
-    private List<(string url, string ItemType)> CreateNinjaUrls()
+    private List<(string url, string ItemType)> CreateNinjaTypeUrls()
     {
         List<(string url, string itemType)> ninjaUrlList = new();
         
-        foreach (NinjaDirectories ninjaType in Enum.GetValues(typeof(NinjaDirectories)))
+        foreach (NinjaDirectoriesApi ninjaType in Enum.GetValues(typeof(NinjaDirectoriesApi)))
         {
             string urlBuilder;
             if (ninjaType is Currency or Fragment)
@@ -129,6 +137,36 @@ public class PoeNinjaPriceFetcher
 
         return ninjaUrlList;
     }
+    
+     Dictionary<NinjaDirectoriesApi, string> baseUrlForItems = new Dictionary<NinjaDirectoriesApi, string>
+        {
+            { Currency, "https://poe.ninja/challenge/currency" },
+            { NinjaDirectoriesApi.Fragment, "https://poe.ninja/challenge/fragments" },
+            { NinjaDirectoriesApi.DivinationCard, "https://poe.ninja/challenge/divination-cards" },
+            { NinjaDirectoriesApi.Artifact, "https://poe.ninja/challenge/artifacts" },
+            { NinjaDirectoriesApi.Oil, "https://poe.ninja/challenge/oils" },
+            { NinjaDirectoriesApi.Incubator, "https://poe.ninja/challenge/incubarots" },
+            { NinjaDirectoriesApi.UniqueWeapon, "https://poe.ninja/challenge/unique-weapons" },
+            { NinjaDirectoriesApi.UniqueArmour, "https://poe.ninja/challenge/unique-armours" },
+            { NinjaDirectoriesApi.UniqueAccessory, "https://poe.ninja/challenge/unique-accessory" },
+            { NinjaDirectoriesApi.UniqueFlask, "https://poe.ninja/challenge/unique-flasks" },
+            { NinjaDirectoriesApi.UniqueJewel, "https://poe.ninja/challenge/unique-jewels" },
+            { NinjaDirectoriesApi.SkillGem, "https://poe.ninja/challenge/skill-gems" },
+            { NinjaDirectoriesApi.ClusterJewel, "https://poe.ninja/challenge/cluster-jewels" },
+            { NinjaDirectoriesApi.Map, "https://poe.ninja/challenge/maps" },
+            { NinjaDirectoriesApi.BlightedMap, "https://poe.ninja/challenge/blighted-maps" },
+            { NinjaDirectoriesApi.BlightRavagedMap, "https://poe.ninja/challenge/bligh-ravaged-maps" },
+            { NinjaDirectoriesApi.DeliriumOrb, "https://poe.ninja/challenge/delirium-orbs" },
+            { NinjaDirectoriesApi.UniqueMap, "https://poe.ninja/challenge/unique-maps" },
+            { NinjaDirectoriesApi.Invitation, "https://poe.ninja/challenge/invitations" },
+            { NinjaDirectoriesApi.Scarab, "https://poe.ninja/challenge/scarabs" },
+            { NinjaDirectoriesApi.Fossil, "https://poe.ninja/challenge/fossils" },
+            { NinjaDirectoriesApi.Resonator, "https://poe.ninja/challenge/resonators" },
+            { NinjaDirectoriesApi.HelmetEnchant, "https://poe.ninja/challenge/helment-enchants" },
+            { NinjaDirectoriesApi.Beast, "https://poe.ninja/challenge/beatst" },
+            { NinjaDirectoriesApi.Essence, "https://poe.ninja/challenge/essences" },
+            { NinjaDirectoriesApi.Vial, "https://poe.ninja/challenge/vials" },
+        };
 }
 
 class NinjaResponse
@@ -145,10 +183,7 @@ class NinjaJsonStructure
     public string? Id { get; set; }
     [JsonPropertyName("currencyTypeName")]
     public string? CurrencyTypeName { get; set; }
-    
-    
-    public NinjaJsonCurrencyUrl CurrencyIconUrl { get; set; }
-    
+
     [JsonPropertyName("icon")] 
     public string itemIconUrl { get; set; }
     

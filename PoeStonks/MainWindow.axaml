@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
         MinWidth="700" MinHeight="400"
         mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="450"
         x:Class="PoeStonks.MainWindow"
@@ -11,7 +12,6 @@
         <!-->Main Styles<!-->
         
         <Window.Styles>
-                
                 <Style Selector="TextBlock.NinjaItemDisplayTextBox">
                         <Setter Property="Foreground" Value="#EAF2EF"/>
                         <Setter Property="FontFamily" Value="assets/fonts/Roboto-Regular.ttf#Roboto"/>
@@ -94,76 +94,84 @@
                         <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" BorderBrush="#2A2A2A" BorderThickness="1">
                         <ScrollViewer Background="#2A2A32">
                                 
-                                <Grid ColumnDefinitions="Auto,Auto,*,*">
+                                <Grid ColumnDefinitions="auto,auto,*" HorizontalAlignment="Stretch">
                                         
-                                        <!--> ICONS FOR ITEMS  <-->
-                                        <ItemsRepeater Grid.Column="0"
-                                                       x:Name="DisplayItemIcon"
-                                                       Classes="NinjaItemDisplay" 
-                                                       Width="50">
-                                                <ItemsRepeater.ItemTemplate>
-                                                        <DataTemplate>
-                                                                <Border Classes="DisplayItemBorder">
-                                                                        <TextBlock x:Name="DisplayItemIconTextBlock"/>
-                                                                </Border>
-                                                        </DataTemplate>
-                                                </ItemsRepeater.ItemTemplate>
-                                        </ItemsRepeater>
-                                        
-                                        
-                                        <!--> ITEM TYPE <-->
-                                        <ItemsRepeater Grid.Column="1" 
-                                                       x:Name="DisplayItemCategory"
-                                                       Classes="NinjaItemDisplay"
-                                                       MinWidth="120">
-                                                <ItemsRepeater.ItemTemplate>
-                                                        <DataTemplate>
-                                                                <Border Classes="DisplayItemBorder">
-                                                                        <TextBlock Classes="NinjaItemDisplayTextBox" TextWrapping="Wrap" Text="{Binding}"/>
-                                                                </Border>
-                                                        </DataTemplate>
-                                                </ItemsRepeater.ItemTemplate>
-                                        </ItemsRepeater>
-                                        
+                                        <!--> ICONS/TYPE FOR ITEMS  <-->
+                                        <Border Grid.Column="0" BorderBrush="#AA7DCE" BorderThickness="0,0,1,0">
+                                                <StackPanel Orientation="Horizontal" MinWidth="250">
+                                                        <ItemsRepeater
+                                                                       x:Name="DisplayItemIcon"
+                                                                       Classes="NinjaItemDisplay" 
+                                                                       Width="50"
+                                                                       DataContext="{Binding NinjaItemIconLink}">
+                                                                <ItemsRepeater.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                                <Border Classes="DisplayItemBorder">
+                                                                                        <Image asyncImageLoader:ImageLoader.Source="{Binding}"
+                                                                                               Margin="2"
+                                                                                               VerticalAlignment="Center"
+                                                                                               HorizontalAlignment="Center"
+                                                                                               Height="18"/>
+                                                                                </Border>
+                                                                        </DataTemplate>
+                                                                 </ItemsRepeater.ItemTemplate>
+                                                        </ItemsRepeater>
+                                                        
+                                                        <ItemsRepeater 
+                                                                x:Name="DisplayItemCategory"
+                                                                Classes="NinjaItemDisplay"
+                                                                MaxWidth="200">
+                                                                <ItemsRepeater.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                                <Border Classes="DisplayItemBorder">
+                                                                                        <TextBlock Classes="NinjaItemDisplayTextBox" TextWrapping="Wrap" Text="{Binding}"/>
+                                                                                </Border>
+                                                                        </DataTemplate>
+                                                                </ItemsRepeater.ItemTemplate>
+                                                        </ItemsRepeater>
+                                                </StackPanel>
+                                        </Border>
                                         
                                         <!--> ITEM NAME AND BUTTON POE.NINJA <-->
-                                        <StackPanel Grid.Column="2" Orientation="Horizontal" MinWidth="200">
-                                                
-                                                <ItemsRepeater Classes="NameAndButton"
-                                                               x:Name="DisplayItemName"
-                                                               MaxWidth="200">
-                                                        <ItemsRepeater.ItemTemplate>
-                                                                <DataTemplate>
-                                                                        <Border Classes="DisplayItemBorder">
-                                                                                <TextBlock Classes="NinjaItemDisplayTextBox" Text="{Binding}"/> 
-                                                                        </Border>
-                                                                </DataTemplate>
-                                                        </ItemsRepeater.ItemTemplate>
-                                                </ItemsRepeater>
-                                                
-                                                <Border BorderBrush="#AA7DCE" BorderThickness="0,0,1,0">
+                                        
+                                        <Border Grid.Column="1" BorderBrush="#AA7DCE" BorderThickness="0,0,1,0">
+                                                <StackPanel Orientation="Horizontal" MinWidth="250">
+                                                        
+                                                        <ItemsRepeater Classes="NameAndButton"
+                                                                       x:Name="DisplayItemName"
+                                                                       MaxWidth="200">
+                                                                <ItemsRepeater.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                                <Border Classes="DisplayItemBorder">
+                                                                                        <TextBlock Classes="NinjaItemDisplayTextBox" Text="{Binding}"/> 
+                                                                                </Border>
+                                                                        </DataTemplate>
+                                                                </ItemsRepeater.ItemTemplate>
+                                                        </ItemsRepeater>
+                                                        
+                                                       
                                                         <ItemsRepeater Classes="NameAndButton" 
-                                                                       x:Name="DisplayItemNinjaIcon"
+                                                                       x:Name="DisplayItemNinjaLink"
                                                                        MinWidth="20">
                                                                 <ItemsRepeater.ItemTemplate>
                                                                         <DataTemplate>
                                                                                 <Border Classes="DisplayItemBorder">
-                                                                                        <Button Classes="DisplayButton" x:Name="NinjaLinkButton" CornerRadius="0"> 
+                                                                                        <Button Classes="DisplayButton" x:Name="NinjaLinkButton" CornerRadius="0" Click="Button_OnClick"> 
                                                                                                 <Image Source="assets/Images/ninjasLogo.png"
-                                                                                                        Stretch="Fill"
-                                                                                                        Height="18"/>
+                                                                                                                Stretch="Fill"
+                                                                                                                Height="18"/>
                                                                                         </Button>
                                                                                 </Border>
                                                                         </DataTemplate>
                                                                 </ItemsRepeater.ItemTemplate>
                                                         </ItemsRepeater>
-                                                </Border>
-                                                
-                                        </StackPanel>
+                                                        
+                                                </StackPanel>
+                                        </Border>
                                         
                                         <!--> CHAOS EQUIVALENT <-->
                                         
-                                        <ItemsControl Grid.Column="3" Classes="NinjaItemDisplay" x:Name="DisplayItemChaosValue">
+                                        <ItemsControl Grid.Column="2" Classes="NinjaItemDisplay" x:Name="DisplayItemChaosValue">
                                                 <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                                 <Border Classes="DisplayItemBorder">
@@ -172,18 +180,6 @@
                                                         </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                         </ItemsControl>
-                                        
-                                        <!-- <ItemsRepeater Grid.Column="3"  -->
-                                        <!--          Classes="NinjaItemDisplay"  -->
-                                        <!--          x:Name="DisplayItemChaosValue"> -->
-                                        <!--         <ItemsRepeater.ItemTemplate> -->
-                                        <!--                 <DataTemplate> -->
-                                        <!--                         <Border Classes="DisplayItemBorder"> -->
-                                        <!--                                 <TextBlock Classes="NinjaItemDisplayTextBox" x:Name="DisplayItemChaosValueTextBlock" Text="{Binding}"/> -->
-                                        <!--                         </Border> -->
-                                        <!--                 </DataTemplate> -->
-                                        <!--         </ItemsRepeater.ItemTemplate> -->
-                                        <!-- </ItemsRepeater> -->
                                         
                                 </Grid>
                                 
