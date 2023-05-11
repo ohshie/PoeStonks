@@ -62,47 +62,45 @@
                 </Grid>
                 
                 <Grid Grid.Row="0" Grid.Column="1"
-                      ColumnDefinitions="*,*,*"
+                      ColumnDefinitions="*"
                       RowDefinitions="Auto,*">
-                        <Panel Grid.ColumnSpan="3">
+                        <Panel Grid.Row="0">
                                 <Border BorderBrush="#2A2A2A" BorderThickness="1"></Border>
                                 <Grid Height="20"
-                                      ColumnDefinitions="Auto,*,*,*">
+                                      ColumnDefinitions="*,*,*" HorizontalAlignment="Stretch">
                                 
-                                <Rectangle Grid.Column="0" Width="40"></Rectangle>
-                                <TextBlock 
-                                        Foreground="#EAF2EF" 
-                                        FontFamily="Helvetica" 
-                                        Grid.Column="1" 
-                                        TextAlignment="Center" Text="Category"/>
-                                <TextBlock 
-                                        Foreground="#EAF2EF" 
-                                        FontFamily="Helvetica" 
-                                        Grid.Column="2" 
-                                        TextAlignment="Center" Text="Item name"/>
-                                <TextBlock 
-                                        Foreground="#EAF2EF" 
-                                        FontFamily="Helvetica" 
-                                        Grid.Column="3" 
-                                        TextAlignment="Center" Text="Chaos value"/>
+                                        <Rectangle Grid.Column="0" MinWidth="250"></Rectangle>
+                                        <TextBlock 
+                                                Foreground="#EAF2EF" 
+                                                FontFamily="Helvetica" 
+                                                Grid.Column="0" 
+                                                TextAlignment="Center" Text="Category"/>
+                                        <TextBlock MinWidth="250"
+                                                   Foreground="#EAF2EF" 
+                                                   FontFamily="Helvetica" 
+                                                   Grid.Column="1" 
+                                                   TextAlignment="Center" Text="Item name"/>
+                                        <TextBlock MinWidth="250"
+                                                   Foreground="#EAF2EF" 
+                                                   FontFamily="Helvetica" 
+                                                   Grid.Column="2" 
+                                                   TextAlignment="Center" Text="Chaos value"/>
                                 
-                        </Grid>
+                                </Grid>
                                 
                         </Panel>
                         
                         <!--> MAIN DISPLAY <-->
-                        <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" BorderBrush="#2A2A2A" BorderThickness="1">
+                        <Border Grid.Row="1" BorderBrush="#2A2A2A" BorderThickness="1">
                         <ScrollViewer Background="#2A2A32">
                                 
-                                <Grid ColumnDefinitions="auto,auto,*" HorizontalAlignment="Stretch">
+                                <Grid ColumnDefinitions="*,*,*" HorizontalAlignment="Stretch">
                                         
                                         <!--> ICONS/TYPE FOR ITEMS  <-->
                                         <Border Grid.Column="0" BorderBrush="#AA7DCE" BorderThickness="0,0,1,0">
-                                                <StackPanel Orientation="Horizontal" MinWidth="250">
-                                                        <ItemsRepeater
-                                                                       x:Name="DisplayItemIcon"
+                                                <StackPanel Orientation="Horizontal">
+                                                        <ItemsRepeater x:Name="DisplayItemIcon"
                                                                        Classes="NinjaItemDisplay" 
-                                                                       Width="50"
                                                                        DataContext="{Binding NinjaItemIconLink}">
                                                                 <ItemsRepeater.ItemTemplate>
                                                                         <DataTemplate>
@@ -119,8 +117,7 @@
                                                         
                                                         <ItemsRepeater 
                                                                 x:Name="DisplayItemCategory"
-                                                                Classes="NinjaItemDisplay"
-                                                                MaxWidth="200">
+                                                                Classes="NinjaItemDisplay">
                                                                 <ItemsRepeater.ItemTemplate>
                                                                         <DataTemplate>
                                                                                 <Border Classes="DisplayItemBorder">
@@ -134,12 +131,11 @@
                                         
                                         <!--> ITEM NAME AND BUTTON POE.NINJA <-->
                                         
-                                        <Border Grid.Column="1" BorderBrush="#AA7DCE" BorderThickness="0,0,1,0">
-                                                <StackPanel Orientation="Horizontal" MinWidth="250">
+                                        <Border Grid.Column="1" BorderBrush="#AA7DCE" BorderThickness="0,0,1,0" Margin="5,0,0,0">
+                                                <StackPanel Orientation="Horizontal">
                                                         
                                                         <ItemsRepeater Classes="NameAndButton"
-                                                                       x:Name="DisplayItemName"
-                                                                       MaxWidth="200">
+                                                                       x:Name="DisplayItemName">
                                                                 <ItemsRepeater.ItemTemplate>
                                                                         <DataTemplate>
                                                                                 <Border Classes="DisplayItemBorder">
@@ -151,8 +147,7 @@
                                                         
                                                        
                                                         <ItemsRepeater Classes="NameAndButton" 
-                                                                       x:Name="DisplayItemNinjaLink"
-                                                                       MinWidth="20">
+                                                                       x:Name="DisplayItemNinjaLink">
                                                                 <ItemsRepeater.ItemTemplate>
                                                                         <DataTemplate>
                                                                                 <Border Classes="DisplayItemBorder">
@@ -171,7 +166,7 @@
                                         
                                         <!--> CHAOS EQUIVALENT <-->
                                         
-                                        <ItemsControl Grid.Column="2" Classes="NinjaItemDisplay" x:Name="DisplayItemChaosValue">
+                                        <ItemsControl Grid.Column="2" Classes="NinjaItemDisplay" x:Name="DisplayItemChaosValue" Margin="5,0,0,0">
                                                 <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                                 <Border Classes="DisplayItemBorder">

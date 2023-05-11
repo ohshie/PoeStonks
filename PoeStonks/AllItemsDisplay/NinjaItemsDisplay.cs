@@ -15,7 +15,15 @@ public class NinjaItemsDisplay
         {
             foreach (var poeItem in poeItems)
             {
-                MainWindow.PoeItemsName.Add(poeItem.ItemName);
+                if (poeItem.ItemName.Length > 25)
+                {
+                    MainWindow.PoeItemsName.Add($"{poeItem.ItemName.Substring(0,23)}...");
+                }
+                else
+                {
+                    MainWindow.PoeItemsName.Add(poeItem.ItemName);
+                } 
+                
                 MainWindow.PoeItemsCategory.Add(poeItem.ItemType);
                 MainWindow.PoeITemsChaosValue.Add(Math.Round(poeItem.ChaosEquivalent,0));
                 MainWindow.NinjaItemIconLink.Add(poeItem.ImgUrl);
