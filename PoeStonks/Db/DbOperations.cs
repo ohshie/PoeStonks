@@ -21,30 +21,16 @@ public class DbOperations
     
     public async Task AddOrUpdateNinjaData(List<PoeItem> freshNinjaItemsList)
     {
-        List<PoeItem> itemsAlreadyInDb;
-        
         // bottom log
         MainWindow.PseudoLog("Database update started");
         
             await RemoveItemsFromDbIfTheyDontExistAnymore(freshNinjaItemsList);
         
             await UpdateNinjaItemsDb(freshNinjaItemsList);
-            
-            using (PsDbContext dbContext = new PsDbContext())
-            {
-                itemsAlreadyInDb = dbContext.PoeItems.ToList();
-                
-                List<PoeItem> itemsToAdd =
-                    freshNinjaItemsList.Except(itemsAlreadyInDb, new DatabaseItemComparerById()).ToList();
-                
-                if (itemsToAdd.Count > 0)
-                {
-                dbContext.PoeItems.AddRange(itemsToAdd);
-                await dbContext.SaveChangesAsync(); 
-                }
-            }
-            
-        // bottom log
+
+            await AddNewItemsToDb(freshNinjaItemsList);
+
+            // bottom log
         MainWindow.PseudoLog("Database update done");;
     }
 
@@ -52,19 +38,18 @@ public class DbOperations
     {
         using (PsDbContext dbContext = new PsDbContext())
         {
-            List<PoeItem> itemsAlreadyInDb = dbContext.PoeItems.ToList();
-            List<PoeItem> itemsToUpdateList = freshItemsFromNinjaList.Intersect(itemsAlreadyInDb, new DatabaseItemComparerByPrice()).ToList();
-            
-            foreach (var item in itemsAlreadyInDb)
+            var itemsToUpdateDictionary = freshItemsFromNinjaList.ToDictionary(pi => pi.Id);
+
+            foreach (var item in dbContext.PoeItems)
             {
-                PoeItem? newItemData = itemsToUpdateList.FirstOrDefault(pi => pi.Id == item.Id);
-                if (newItemData != null)
+                if (itemsToUpdateDictionary.TryGetValue(item.Id, out PoeItem? newItemData))
                 {
-                    item.ChaosEquivalent = newItemData.ChaosEquivalent;
+                    if (item.ChaosEquivalent != newItemData.ChaosEquivalent)
+                    {
+                        item.ChaosEquivalent = newItemData.ChaosEquivalent;
+                    }
                 }
             }
-            
-            dbContext.PoeItems.UpdateRange(itemsAlreadyInDb);
             await dbContext.SaveChangesAsync();
         }
     }
@@ -73,43 +58,35 @@ public class DbOperations
     {
         using (PsDbContext dbContext = new PsDbContext())
         {
-            List<PoeItem> itemsAlreadyInDb = dbContext.PoeItems.ToList();
-            List<PoeItem> itemsToDelete = itemsAlreadyInDb.Except(freshNinjaItemsList, new DatabaseItemComparerById()).ToList();
-            
-            foreach (var item in itemsToDelete)
+            var freshItemDictionary = freshNinjaItemsList.ToDictionary(pi => pi.Id);
+
+            foreach (var item in dbContext.PoeItems)
             {
-                itemsAlreadyInDb.Remove(item);
+                if (!freshItemDictionary.ContainsKey(item.Id))
+                {
+                    dbContext.PoeItems.Remove(item);
+                }
             }
-                    
-            dbContext.PoeItems.UpdateRange(itemsAlreadyInDb);
+            
+            await dbContext.SaveChangesAsync();
+        }
+    }
+
+    private async Task AddNewItemsToDb(List<PoeItem> freshNinjaItemsList)
+    {
+        using (PsDbContext dbContext = new PsDbContext())
+        {
+            var itemsInDb = dbContext.PoeItems.ToDictionary(pi => pi.Id);
+
+            foreach (var item in freshNinjaItemsList)
+            {
+                if (!itemsInDb.ContainsKey(item.Id))
+                {
+                    dbContext.PoeItems.Add(item);
+                }
+            }
+            
             await dbContext.SaveChangesAsync();
         }
     }
 }
-
-internal class DatabaseItemComparerByPrice : IEqualityComparer<PoeItem>
-{
-    public bool Equals(PoeItem x, PoeItem y)
-    {
-        return x.ChaosEquivalent == y.ChaosEquivalent;
-    }
-
-    public int GetHashCode(PoeItem obj)
-    {
-        return obj.ItemName.GetHashCode();
-    }
-}
-
-internal class DatabaseItemComparerById : IEqualityComparer<PoeItem>
-{
-    public bool Equals(PoeItem x, PoeItem y)
-    {
-        return x.Id == y.Id;
-    }
-
-    public int GetHashCode(PoeItem obj)
-    {
-        return obj.ItemName.GetHashCode();
-    }
-}
-

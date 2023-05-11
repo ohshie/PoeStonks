@@ -1,8 +1,11 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using DynamicData;
 using PoeStonks.AllItemsDisplay;
 using PoeStonks.Db;
 using PoeStonks.PoeNinja;
