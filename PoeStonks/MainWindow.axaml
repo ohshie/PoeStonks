@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-        MinWidth="700" MinHeight="400"
+        MinWidth="900" MinHeight="400"
         mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="450"
         x:Class="PoeStonks.MainWindow"
         Title="PoeStonks"
@@ -12,6 +12,13 @@
         <!-->Main Styles<!-->
         
         <Window.Styles>
+                <Style Selector="TextBlock.DisplayHeader">
+                        <Setter Property="Foreground" Value="#EAF2EF"/>
+                        <Setter Property="FontFamily" Value="assets/fonts/Roboto-Regular.ttf#Roboto"/>
+                        <Setter Property="TextAlignment" Value="Center"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="Padding" Value="1"/>
+                </Style>
                 <Style Selector="TextBlock.NinjaItemDisplayTextBox">
                         <Setter Property="Foreground" Value="#EAF2EF"/>
                         <Setter Property="FontFamily" Value="assets/fonts/Roboto-Regular.ttf#Roboto"/>
@@ -29,6 +36,7 @@
                 <Style Selector="ItemsRepeater.NinjaItemDisplay">
                         <Setter Property="Background" Value="#2A2A32"></Setter>
                         <Setter Property="Margin" Value="2,0,0,2"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
                 </Style>
                 <Style Selector="ItemsRepeater.NameAndButton">
                         <Setter Property="Background" Value="#2A2A32"></Setter>
@@ -67,24 +75,20 @@
                         <Panel Grid.Row="0">
                                 <Border BorderBrush="#2A2A2A" BorderThickness="1"></Border>
                                 <Grid Height="20"
-                                      ColumnDefinitions="*,*,*" HorizontalAlignment="Stretch">
+                                      ColumnDefinitions="*,*,*,*" HorizontalAlignment="Stretch">
                                 
                                         <Rectangle Grid.Column="0" MinWidth="250"></Rectangle>
-                                        <TextBlock 
-                                                Foreground="#EAF2EF" 
-                                                FontFamily="Helvetica" 
-                                                Grid.Column="0" 
-                                                TextAlignment="Center" Text="Category"/>
-                                        <TextBlock MinWidth="250"
-                                                   Foreground="#EAF2EF" 
-                                                   FontFamily="Helvetica" 
-                                                   Grid.Column="1" 
-                                                   TextAlignment="Center" Text="Item name"/>
-                                        <TextBlock MinWidth="250"
-                                                   Foreground="#EAF2EF" 
-                                                   FontFamily="Helvetica" 
-                                                   Grid.Column="2" 
-                                                   TextAlignment="Center" Text="Chaos value"/>
+                                        <TextBlock Grid.Column="0" 
+                                                   Classes="DisplayHeader"
+                                                   Text="Category"/>
+                                        <TextBlock Grid.Column="1"  Classes="DisplayHeader"
+                                                   Text="Item name"/>
+                                        <TextBlock Grid.Column="2" 
+                                                   Classes="DisplayHeader" 
+                                                   Text="Chaos value"/>
+                                        <TextBlock Grid.Column="3" 
+                                                   Classes="DisplayHeader"
+                                                   Text="Divine Value"/>
                                 
                                 </Grid>
                                 
@@ -92,12 +96,14 @@
                         
                         <!--> MAIN DISPLAY <-->
                         <Border Grid.Row="1" BorderBrush="#2A2A2A" BorderThickness="1">
-                        <ScrollViewer Background="#2A2A32">
                                 
-                                <Grid ColumnDefinitions="*,*,*" HorizontalAlignment="Stretch">
+                                <ScrollViewer Background="#2A2A32">
+                                
+                                <Grid ColumnDefinitions="*,*,*,*" HorizontalAlignment="Stretch">
                                         
                                         <!--> ICONS/TYPE FOR ITEMS  <-->
-                                        <Border Grid.Column="0" BorderBrush="#AA7DCE" BorderThickness="0,0,1,0">
+                                        <Border Grid.Column="0" BorderBrush="#AA7DCE" 
+                                                BorderThickness="0,0,1,0">
                                                 <StackPanel Orientation="Horizontal">
                                                         <ItemsRepeater x:Name="DisplayItemIcon"
                                                                        Classes="NinjaItemDisplay" 
@@ -131,9 +137,11 @@
                                         
                                         <!--> ITEM NAME AND BUTTON POE.NINJA <-->
                                         
-                                        <Border Grid.Column="1" BorderBrush="#AA7DCE" BorderThickness="0,0,1,0" Margin="5,0,0,0">
+                                        <Border Grid.Column="1" BorderBrush="#AA7DCE" 
+                                                BorderThickness="0,0,1,0" 
+                                                Margin="5,0,0,0">
                                                 <StackPanel Orientation="Horizontal">
-                                                        
+                                                  
                                                         <ItemsRepeater Classes="NameAndButton"
                                                                        x:Name="DisplayItemName">
                                                                 <ItemsRepeater.ItemTemplate>
@@ -165,17 +173,31 @@
                                         </Border>
                                         
                                         <!--> CHAOS EQUIVALENT <-->
+                                        <Border Grid.Column="2" BorderBrush="#AA7DCE" 
+                                                BorderThickness="0,0,1,0" 
+                                                Margin="5,0,0,0">
+                                                
+                                                <ItemsControl Classes="NinjaItemDisplay" x:Name="DisplayItemChaosValue" Margin="5,0,0,0" HorizontalAlignment="Center">
+                                                        <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                        <Border Classes="DisplayItemBorder">
+                                                                                <TextBlock Classes="NinjaItemDisplayTextBox" x:Name="DisplayItemChaosValueTextBlock" Text="{Binding}"/>
+                                                                        </Border>
+                                                                </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                                
+                                        </Border>
                                         
-                                        <ItemsControl Grid.Column="2" Classes="NinjaItemDisplay" x:Name="DisplayItemChaosValue" Margin="5,0,0,0">
+                                        <ItemsControl Grid.Column="3" Classes="NinjaItemDisplay" x:Name="DisplayItemDivineEquivalent" Margin="5,0,0,0" HorizontalAlignment="Center">
                                                 <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                                 <Border Classes="DisplayItemBorder">
-                                                                        <TextBlock Classes="NinjaItemDisplayTextBox" x:Name="DisplayItemChaosValueTextBlock" Text="{Binding}"/>
+                                                                        <TextBlock Classes="NinjaItemDisplayTextBox" x:Name="DisplayItemDivineEquivalentTextBlock" Text="{Binding}"/>
                                                                 </Border>
                                                         </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                         </ItemsControl>
-                                        
                                 </Grid>
                                 
                         </ScrollViewer>

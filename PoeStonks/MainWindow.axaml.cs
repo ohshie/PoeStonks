@@ -18,11 +18,11 @@ public partial class MainWindow : Window
 {
     public static ObservableCollection<string> PoeItemsName = new();
     public static ObservableCollection<string> PoeItemsCategory = new();
-    public static ObservableCollection<double> PoeITemsChaosValue = new();
+    public static ObservableCollection<double> PoeItemsChaosValue = new();
     public static ObservableCollection<Image> PoeItemsImage = new();
     public static ObservableCollection<string> NinjaItemLink = new();
     public static ObservableCollection<string> NinjaItemIconLink = new();
-
+    public static ObservableCollection<double> PoeItemsDivineEquivalent = new();
 
     private readonly NinjaItemsDisplay _ninjaItemsDisplay = new();
     
@@ -40,10 +40,11 @@ public partial class MainWindow : Window
         var test = DisplayItemChaosValue.ItemsSource;
         DisplayItemName.ItemsSource = PoeItemsName;
         DisplayItemCategory.ItemsSource = PoeItemsCategory;
-        DisplayItemChaosValue.ItemsSource = PoeITemsChaosValue;
+        DisplayItemChaosValue.ItemsSource = PoeItemsChaosValue;
         DisplayItemIcon.ItemsSource = PoeItemsImage;
         DisplayItemNinjaLink.ItemsSource = NinjaItemLink;
         DisplayItemIcon.ItemsSource = NinjaItemIconLink;
+        DisplayItemDivineEquivalent.ItemsSource = PoeItemsDivineEquivalent;
 
         _ninjaItemsDisplay.NinjaItemsDisplayFill();
     }
