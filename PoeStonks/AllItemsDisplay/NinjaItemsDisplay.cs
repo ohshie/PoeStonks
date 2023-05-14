@@ -1,43 +1,39 @@
-using System;
-using System.Collections.Generic;
 using PoeStonks.Db;
+using PoeStonks.PoeNinja;
 
 namespace PoeStonks.AllItemsDisplay;
 
 public class NinjaItemsDisplay
 {
-    private DbToAllItemsDisplay _dbToAllItemsDisplay = new();
-    public double CurrentDivinePrice { get; set; }
+    private readonly DbToItemsDisplay _dbToAllItemsDisplay = new();
 
-    public NinjaItemsDisplay()
+    public async Task<List<PoeItem>> GetFreshNinjaData()
     {
-        CurrentDivinePrice =_dbToAllItemsDisplay.FetchDivinePrice();
+        PoeNinjaPriceFetcher ninjaPriceFetcher = new();
+        List<PoeItem> freshNinjaData = await ninjaPriceFetcher.FetchPricesFromNinja();
+
+        return freshNinjaData;
+    }
+
+    public async Task PopulateOrUpdateDb(List<PoeItem> freshNinjaData)
+    {
+        DbOperations dbOperations = new();
+        await dbOperations.AddOrUpdateNinjaData(freshNinjaData);
     }
     
-    public void NinjaItemsDisplayFill()
+    public List<PoeItem> FetchItemsDefault()
     {
-        CurrentDivinePrice = _dbToAllItemsDisplay.FetchDivinePrice();
+        DbToItemsDisplay dbToAllItemsDisplay = new();
+        List<PoeItem> listOfItems = dbToAllItemsDisplay.FetchItemsSortedByChaos(50);
         
-        List<PoeItem> poeItems = _dbToAllItemsDisplay.FetchItemsToDisplayInitialOrAfterUpdate(50);
-        if (poeItems != null)
-        {
-            foreach (var poeItem in poeItems)
-            {
-                if (poeItem.ItemName.Length > 25)
-                {
-                    MainWindow.PoeItemsName.Add($"{poeItem.ItemName.Substring(0,23)}...");
-                }
-                else
-                {
-                    MainWindow.PoeItemsName.Add(poeItem.ItemName);
-                } 
-                
-                MainWindow.PoeItemsCategory.Add(poeItem.ItemType);
-                MainWindow.PoeItemsChaosValue.Add(Math.Round(poeItem.ChaosEquivalent,0));
-                MainWindow.NinjaItemIconLink.Add(poeItem.ImgUrl);
-                MainWindow.NinjaItemLink.Add(poeItem.ItemUrl);
-                MainWindow.PoeItemsDivineEquivalent.Add(Math.Round(poeItem.ChaosEquivalent/CurrentDivinePrice,2));
-            } 
-        }
+        return listOfItems;
+    }
+
+    public double GetCurrentDivinePrice()
+    {
+        double divinePrice = _dbToAllItemsDisplay.FetchDivinePrice();
+        if (divinePrice != null) return divinePrice;
+
+        return 0;
     }
 }

@@ -1,18 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace PoeStonks.Db;
 
-public class DbToAllItemsDisplay : DbOperations
+public class DbToItemsDisplay : DbOperations
 {
-    public List<PoeItem> FetchItemsToDisplayInitialOrAfterUpdate(int amount)
+    public List<PoeItem> FetchItemsSortedByChaos(int amount)
     {
         using (PsDbContext dbContext = new())
         {
             if (dbContext.PoeItems.Any())
             {
-                List<PoeItem> poeItems = dbContext.PoeItems.Take(amount).OrderByDescending(pi => pi.ChaosEquivalent).ToList();
+                List<PoeItem> poeItems = dbContext.PoeItems
+                    .Include(pi => pi.SparkLine)
+                    .OrderByDescending(pi => pi.ChaosEquivalent)
+                    .Take(amount)
+                    .ToList();
+                
                 return poeItems;
             }
         }

@@ -74,21 +74,27 @@
                       RowDefinitions="Auto,*">
                         <Panel Grid.Row="0">
                                 <Border BorderBrush="#2A2A2A" BorderThickness="1"></Border>
-                                <Grid Height="20"
-                                      ColumnDefinitions="*,*,*,*" HorizontalAlignment="Stretch">
+                                <Grid Height="25"
+                                      ColumnDefinitions="*,*,*,*" 
+                                      HorizontalAlignment="Stretch">
                                 
                                         <Rectangle Grid.Column="0" MinWidth="250"></Rectangle>
-                                        <TextBlock Grid.Column="0" 
+                                        <Button Grid.Column="0" 
+                                                HorizontalAlignment="Stretch"
                                                    Classes="DisplayHeader"
-                                                   Text="Category"/>
-                                        <TextBlock Grid.Column="1"  Classes="DisplayHeader"
-                                                   Text="Item name"/>
-                                        <TextBlock Grid.Column="2" 
+                                                   Content="Category"
+                                                HorizontalContentAlignment="Center"/>
+                                        <Button Grid.Column="1"  Classes="DisplayHeader"
+                                                HorizontalAlignment="Stretch"
+                                                   Content="Item name"/>
+                                        <Button Grid.Column="2" 
                                                    Classes="DisplayHeader" 
-                                                   Text="Chaos value"/>
-                                        <TextBlock Grid.Column="3" 
+                                                   HorizontalAlignment="Stretch"
+                                                   Content="Chaos value"/>
+                                        <Button Grid.Column="3" 
                                                    Classes="DisplayHeader"
-                                                   Text="Divine Value"/>
+                                                   HorizontalAlignment="Stretch"
+                                                   Content="Divine Value"/>
                                 
                                 </Grid>
                                 
@@ -105,9 +111,11 @@
                                         <Border Grid.Column="0" BorderBrush="#AA7DCE" 
                                                 BorderThickness="0,0,1,0">
                                                 <StackPanel Orientation="Horizontal">
-                                                        <ItemsRepeater x:Name="DisplayItemIcon"
-                                                                       Classes="NinjaItemDisplay" 
-                                                                       DataContext="{Binding NinjaItemIconLink}">
+                                                        
+                                                        <!--> Items icons <-->
+                                                        <ItemsRepeater x:Name="DisplayItemIcons"
+                                                                       Classes="NinjaItemDisplay"
+                                                                       DataContext="{Binding ItemsPicturesUrl}">
                                                                 <ItemsRepeater.ItemTemplate>
                                                                         <DataTemplate>
                                                                                 <Border Classes="DisplayItemBorder">
@@ -121,8 +129,9 @@
                                                                  </ItemsRepeater.ItemTemplate>
                                                         </ItemsRepeater>
                                                         
+                                                        <!--> Items categories <-->
                                                         <ItemsRepeater 
-                                                                x:Name="DisplayItemCategory"
+                                                                x:Name="DisplayItemsCategories"
                                                                 Classes="NinjaItemDisplay">
                                                                 <ItemsRepeater.ItemTemplate>
                                                                         <DataTemplate>
@@ -142,8 +151,9 @@
                                                 Margin="5,0,0,0">
                                                 <StackPanel Orientation="Horizontal">
                                                   
+                                                        <!--> Items Names <-->
                                                         <ItemsRepeater Classes="NameAndButton"
-                                                                       x:Name="DisplayItemName">
+                                                                       x:Name="DisplayItemsNames">
                                                                 <ItemsRepeater.ItemTemplate>
                                                                         <DataTemplate>
                                                                                 <Border Classes="DisplayItemBorder">
@@ -153,13 +163,15 @@
                                                                 </ItemsRepeater.ItemTemplate>
                                                         </ItemsRepeater>
                                                         
-                                                       
+                                                        <!--> Button to open poe ninja <-->
                                                         <ItemsRepeater Classes="NameAndButton" 
-                                                                       x:Name="DisplayItemNinjaLink">
+                                                                       x:Name="DisplayItemsUrls">
                                                                 <ItemsRepeater.ItemTemplate>
                                                                         <DataTemplate>
                                                                                 <Border Classes="DisplayItemBorder">
-                                                                                        <Button Classes="DisplayButton" x:Name="NinjaLinkButton" CornerRadius="0" Click="Button_OnClick"> 
+                                                                                        <Button Classes="DisplayButton" x:Name="NinjaLinkButton" 
+                                                                                                CornerRadius="0" 
+                                                                                                Click="Button_OnClick"> 
                                                                                                 <Image Source="assets/Images/ninjasLogo.png"
                                                                                                                 Stretch="Fill"
                                                                                                                 Height="18"/>
@@ -177,11 +189,15 @@
                                                 BorderThickness="0,0,1,0" 
                                                 Margin="5,0,0,0">
                                                 
-                                                <ItemsControl Classes="NinjaItemDisplay" x:Name="DisplayItemChaosValue" Margin="5,0,0,0" HorizontalAlignment="Center">
+                                                <ItemsControl Classes="NinjaItemDisplay" 
+                                                              x:Name="DisplayItemsChaosValue" 
+                                                              Margin="5,0,0,0" 
+                                                              HorizontalAlignment="Center">
                                                         <ItemsControl.ItemTemplate>
                                                                 <DataTemplate>
                                                                         <Border Classes="DisplayItemBorder">
-                                                                                <TextBlock Classes="NinjaItemDisplayTextBox" x:Name="DisplayItemChaosValueTextBlock" Text="{Binding}"/>
+                                                                                <TextBlock Classes="NinjaItemDisplayTextBox"
+                                                                                        Text="{Binding}"/>
                                                                         </Border>
                                                                 </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
@@ -189,11 +205,17 @@
                                                 
                                         </Border>
                                         
-                                        <ItemsControl Grid.Column="3" Classes="NinjaItemDisplay" x:Name="DisplayItemDivineEquivalent" Margin="5,0,0,0" HorizontalAlignment="Center">
+                                        <!--> Divine value <-->
+                                        <ItemsControl Grid.Column="3" 
+                                                      Classes="NinjaItemDisplay" 
+                                                      x:Name="DisplayItemsDivineValue" 
+                                                      Margin="5,0,0,0" 
+                                                      HorizontalAlignment="Center">
                                                 <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                                 <Border Classes="DisplayItemBorder">
-                                                                        <TextBlock Classes="NinjaItemDisplayTextBox" x:Name="DisplayItemDivineEquivalentTextBlock" Text="{Binding}"/>
+                                                                        <TextBlock Classes="NinjaItemDisplayTextBox" 
+                                                                                Text="{Binding}"/>
                                                                 </Border>
                                                         </DataTemplate>
                                                 </ItemsControl.ItemTemplate>

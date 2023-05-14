@@ -1,37 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using PoeStonks.PoeNinja;
-
 namespace PoeStonks.Db;
 
 public class DbOperations
 {
-
-    public DbOperations(MainWindow mainWindow)
-    {
-        MainWindow = mainWindow;
-    }
-
-    protected DbOperations(){}
-
-    private MainWindow MainWindow { get; }
-    
     public async Task AddOrUpdateNinjaData(List<PoeItem> freshNinjaItemsList)
     {
-        // bottom log
-        MainWindow.PseudoLog("Database update started");
+        Logger.LogMessageOutput = "Database update started";
         
-            await RemoveItemsFromDbIfTheyDontExistAnymore(freshNinjaItemsList);
+        await RemoveItemsFromDbIfTheyDontExistAnymore(freshNinjaItemsList);
         
-            await UpdateNinjaItemsDb(freshNinjaItemsList);
+        await UpdateNinjaItemsDb(freshNinjaItemsList);
 
-            await AddNewItemsToDb(freshNinjaItemsList);
-
-            // bottom log
-        MainWindow.PseudoLog("Database update done");;
+        await AddNewItemsToDb(freshNinjaItemsList);
+        
+        Logger.LogMessageOutput = "Database update done";
     }
 
     private async Task UpdateNinjaItemsDb(List<PoeItem> freshItemsFromNinjaList)

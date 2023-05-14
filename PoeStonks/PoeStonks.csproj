@@ -48,5 +48,7 @@
       <AvaloniaResource Include="assets\fonts\Roboto-Regular.ttf" />
       <None Remove="assets\fonts\Roboto-Thin.ttf" />
       <AvaloniaResource Include="assets\fonts\Roboto-Thin.ttf" />
+      <None Remove="assets\Images\sortingArrow.png" />
+      <AvaloniaResource Include="assets\Images\sortingArrow.png" />
     </ItemGroup>
 </Project>

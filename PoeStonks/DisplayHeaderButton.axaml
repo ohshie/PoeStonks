@@ -1,0 +1,38 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:PoeStonks">
+    <Design.PreviewWith>
+        <controls:DisplayHeaderButton  Width="100" Height="25"/>
+    </Design.PreviewWith>
+
+    
+    
+    <Style Selector="controls|DisplayHeaderButton">
+        <!-- Set Defaults -->
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ColumnDefinitions="*,Auto">
+                    
+                    <Button Grid.Column="0" 
+                            Grid.ColumnSpan="2" 
+                            x:Name="DisplayHeaderButton"
+                            Content="Category" 
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            FontSize="14"
+                            Margin="0" Padding="0" BorderThickness="0">
+                    </Button>
+                    
+                    <Image Grid.Column="1" 
+                           x:Name="SortingArrow"
+                           Height="15" 
+                           ZIndex="1" Source="assets/Images/sortingArrow.png" Opacity="0" >
+                    </Image>
+                </Grid>
+               
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

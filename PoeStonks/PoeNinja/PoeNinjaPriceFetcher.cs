@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using PoeStonks.Db;
 using static PoeStonks.PoeNinja.NinjaDirectoriesApi;
 
@@ -12,21 +8,12 @@ namespace PoeStonks.PoeNinja;
 
 public class PoeNinjaPriceFetcher
 {
-    private MainWindow MainWindow { get; set; }
-
-    public PoeNinjaPriceFetcher(MainWindow mainWindow)
-    {
-        MainWindow = mainWindow;
-        _dbOperations = new DbOperations(mainWindow);
-    }
-
     readonly HttpClient _httpClient = new();
 
     private readonly string _baseNinjaUrl = "https://poe.ninja/api/data/";
 
     private List<PoeItem> _listOfAllItems = new();
-    private DbOperations _dbOperations;
-    
+
     public async Task<List<PoeItem>> FetchPricesFromNinja()
     {
         List<Task> fetchinFromPoeNinja = new List<Task>();
@@ -41,18 +28,9 @@ public class PoeNinjaPriceFetcher
         await Task.WhenAll(fetchinFromPoeNinja);
 
         // bottom log
-        MainWindow.PseudoLog("Received poe.ninja data");
-        
-        await _dbOperations.AddOrUpdateNinjaData(_listOfAllItems);
+        Logger.LogMessageOutput = "Received poe.ninja data";
 
-        DbToAllItemsDisplay dbToAllItemsDisplay = new();
-        
-        List<PoeItem> itemsToDisplay = dbToAllItemsDisplay.FetchItemsToDisplayInitialOrAfterUpdate(50);
-        
-        // bottom log
-        MainWindow.PseudoLog("Prices updated.");
-        
-        return itemsToDisplay;
+        return _listOfAllItems;
     }
 
     private async Task GetJsonFromNinja(string ninjaUrl, string itemType)
@@ -104,9 +82,8 @@ public class PoeNinjaPriceFetcher
                     })
                 });
             }
-
-            // bottom log
-            MainWindow.PseudoLog($"{itemType} data fetched from poe.ninja");
+            
+            Logger.LogMessageOutput = $"{itemType} data fetched from poe.ninja";
             
             _listOfAllItems.AddRange(newItem);
         }
@@ -204,12 +181,6 @@ class NinjaJsonSparkLine
     [JsonPropertyName("data")] 
     [JsonConverter(typeof(DoubleListWithNullHandlingConverter))]
     public List<double>? NinjaSparkLineData { get; set; }
-}
-
-class NinjaJsonCurrencyUrl
-{
-    [JsonPropertyName("icon")] 
-    public string IconUrl { get; set; }
 }
 
 class DoubleListWithNullHandlingConverter : JsonConverter<List<double>>

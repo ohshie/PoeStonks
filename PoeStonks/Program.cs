@@ -1,5 +1,4 @@
 ﻿using Avalonia;
-using System;
 using Microsoft.EntityFrameworkCore;
 using PoeStonks.Db;
 

@@ -1,7 +1,5 @@
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -16,52 +14,59 @@ namespace PoeStonks;
 
 public partial class MainWindow : Window
 {
-    public static ObservableCollection<string> PoeItemsName = new();
-    public static ObservableCollection<string> PoeItemsCategory = new();
-    public static ObservableCollection<double> PoeItemsChaosValue = new();
-    public static ObservableCollection<Image> PoeItemsImage = new();
-    public static ObservableCollection<string> NinjaItemLink = new();
-    public static ObservableCollection<string> NinjaItemIconLink = new();
-    public static ObservableCollection<double> PoeItemsDivineEquivalent = new();
-
-    private readonly NinjaItemsDisplay _ninjaItemsDisplay = new();
+    // view properties
+    private ObservableCollection<string> ItemsNames = new();
+    private ObservableCollection<string> ItemsCategories = new();
+    private ObservableCollection<double> ItemsChaosValues = new();
+    private ObservableCollection<string> ItemsUrl = new();
+    private ObservableCollection<string> ItemsPicturesUrl = new();
+    private ObservableCollection<double> ItemsDivineValues = new();
     
     public MainWindow()
     {
-        using PsDbContext dbContext = new PsDbContext();
-        {
-            dbContext.Database.EnsureCreated();
-        }
-        
         InitializeComponent();
         
         DataContext = this;
         
-        var test = DisplayItemChaosValue.ItemsSource;
-        DisplayItemName.ItemsSource = PoeItemsName;
-        DisplayItemCategory.ItemsSource = PoeItemsCategory;
-        DisplayItemChaosValue.ItemsSource = PoeItemsChaosValue;
-        DisplayItemIcon.ItemsSource = PoeItemsImage;
-        DisplayItemNinjaLink.ItemsSource = NinjaItemLink;
-        DisplayItemIcon.ItemsSource = NinjaItemIconLink;
-        DisplayItemDivineEquivalent.ItemsSource = PoeItemsDivineEquivalent;
-
-        _ninjaItemsDisplay.NinjaItemsDisplayFill();
+        DisplayItemsNames.ItemsSource = ItemsNames;
+        DisplayItemsCategories.ItemsSource = ItemsCategories;
+        DisplayItemsChaosValue.ItemsSource = ItemsChaosValues;
+        DisplayItemsUrls.ItemsSource = ItemsUrl;
+        DisplayItemIcons.ItemsSource = ItemsPicturesUrl;
+        DisplayItemsDivineValue.ItemsSource = ItemsDivineValues;
+        
+        PopulateDisplayWithDefaultValues();
+        Logger.LogMessageOutput ="Ready";
     }
     
     private async void Button_FetchItemsFromPoeNinja(object? sender, RoutedEventArgs e)
     {
-        PoeNinjaPriceFetcher priceFetcher = new(this);
+        // start logging
+        Logger.LogMessageOutputChanged += OnLogMessageOutputChanged;
 
-        await priceFetcher.FetchPricesFromNinja();
-        _ninjaItemsDisplay.NinjaItemsDisplayFill();
+        NinjaItemsDisplay ninjaItemsDisplay = new();
+        
+        Logger.LogMessageOutput ="Getting data from poe.ninja";
+        List<PoeItem> freshNinjaData = await ninjaItemsDisplay.GetFreshNinjaData();
+        
+        Logger.LogMessageOutput ="Updating Db";
+        await ninjaItemsDisplay.PopulateOrUpdateDb(freshNinjaData);
+        
+        PopulateDisplayWithDefaultValues();
     }
 
-    public void PseudoLog(string logMessage)
+    private void PopulateDisplayWithDefaultValues()
     {
-        ConsoleOutPutTextBlock.Text = logMessage;
+        NinjaItemsDisplay ninjaItemsDisplay = new();
+        
+        Logger.LogMessageOutput ="Fetching items to display";
+        List<PoeItem> itemsFromDb = ninjaItemsDisplay.FetchItemsDefault();
+        double currentDivinePrice = ninjaItemsDisplay.GetCurrentDivinePrice();
+        
+        Logger.LogMessageOutput ="Ready";
+        PoeItemsListToDisplay(itemsFromDb, currentDivinePrice);
     }
-
+    
     private void Button_OnClick(object? sender, RoutedEventArgs e)
     {
         if (sender is Button button)
@@ -74,6 +79,21 @@ public partial class MainWindow : Window
         }
     }
 
+    private void PoeItemsListToDisplay(List<PoeItem> poeItems, double currentDivinePrice)
+    {
+        foreach (var poeItem in poeItems)
+        {
+            if (poeItem.ItemName?.Length > 25) ItemsNames.Add($"{poeItem.ItemName.Substring(0,23)}...");
+            else ItemsNames.Add(poeItem.ItemName);
+
+            ItemsCategories.Add(poeItem.ItemType);
+            ItemsChaosValues.Add(Math.Round(poeItem.ChaosEquivalent,0));
+            ItemsPicturesUrl.Add(poeItem.ImgUrl);
+            ItemsUrl.Add(poeItem.ItemUrl);
+            ItemsDivineValues.Add(Math.Round(poeItem.ChaosEquivalent/currentDivinePrice,2));
+        } 
+    }
+    
     private void OpenUrlInBrowser(string url)
     {
         try
@@ -101,6 +121,11 @@ public partial class MainWindow : Window
                 throw;
             }
         }
+    }
+    
+    private void OnLogMessageOutputChanged(string newLogMessageOutput)
+    {
+        ConsoleOutPutTextBlock.Text = newLogMessageOutput;
     }
 }
 
