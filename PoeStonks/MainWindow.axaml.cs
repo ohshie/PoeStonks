@@ -64,7 +64,10 @@ public partial class MainWindow : Window
         double currentDivinePrice = ninjaItemsDisplay.GetCurrentDivinePrice();
         
         Logger.LogMessageOutput ="Ready";
-        PoeItemsListToDisplay(itemsFromDb, currentDivinePrice);
+        if (currentDivinePrice != null && itemsFromDb != null)
+        {
+            PoeItemsListToDisplay(itemsFromDb, currentDivinePrice);
+        }
     }
     
     private void Button_OnClick(object? sender, RoutedEventArgs e)

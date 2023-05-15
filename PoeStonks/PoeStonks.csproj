@@ -51,4 +51,11 @@
       <None Remove="assets\Images\sortingArrow.png" />
       <AvaloniaResource Include="assets\Images\sortingArrow.png" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Styles\DisplayHeaderButton.axaml.cs">
+        <DependentUpon>DisplayHeaderButton.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
 </Project>

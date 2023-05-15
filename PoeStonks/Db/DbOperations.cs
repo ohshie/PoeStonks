@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace PoeStonks.Db;
 
 public class DbOperations
@@ -41,7 +43,7 @@ public class DbOperations
         {
             var freshItemDictionary = freshNinjaItemsList.ToDictionary(pi => pi.Id);
 
-            foreach (var item in dbContext.PoeItems)
+            foreach (var item in dbContext.PoeItems.Include(pi => pi.SparkLine))
             {
                 if (!freshItemDictionary.ContainsKey(item.Id))
                 {

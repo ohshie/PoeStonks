@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+        xmlns:poeStonks="clr-namespace:PoeStonks"
         MinWidth="900" MinHeight="400"
         mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="450"
         x:Class="PoeStonks.MainWindow"
@@ -56,6 +57,8 @@
                         <Setter Property="CornerRadius" Value="0"/>
                 </Style>
                 
+                <StyleInclude Source="Styles/DisplayHeaderButton.axaml"/>
+                
         </Window.Styles>
         
         <Grid ColumnDefinitions="Auto,*" RowDefinitions="*,auto">
@@ -79,11 +82,12 @@
                                       HorizontalAlignment="Stretch">
                                 
                                         <Rectangle Grid.Column="0" MinWidth="250"></Rectangle>
-                                        <Button Grid.Column="0" 
-                                                HorizontalAlignment="Stretch"
-                                                   Classes="DisplayHeader"
-                                                   Content="Category"
-                                                HorizontalContentAlignment="Center"/>
+                                        <poeStonks:DisplayHeaderButton Grid.Column="0" 
+                                                                      HorizontalAlignment="Stretch"
+                                                                      Classes="DisplayHeader"
+                                                                      Width="100"
+                                                                      Background="red"
+                                                                      Height="100"/>
                                         <Button Grid.Column="1"  Classes="DisplayHeader"
                                                 HorizontalAlignment="Stretch"
                                                    Content="Item name"/>
