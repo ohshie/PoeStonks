@@ -11,12 +11,11 @@
         <!-- Set Defaults -->
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid ColumnDefinitions="*,Auto" Background="red">
+                <Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     
                     <Button Grid.Column="0" 
                             Grid.ColumnSpan="2" 
                             x:Name="DisplayHeaderButton"
-                            Content="Category" 
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
                             HorizontalContentAlignment="Center"
@@ -27,7 +26,7 @@
                     
                     <Image Grid.Column="1" 
                            x:Name="SortingArrow"
-                           Height="15" 
+                           Height="13" 
                            ZIndex="1" Source="../assets/Images/sortingArrow.png" Opacity="0" >
                         <Image.Styles>
                             <Style Selector="Image">

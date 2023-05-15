@@ -1,12 +1,26 @@
+using System.Windows.Input;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
+using Avalonia.Media.Transformation;
+using Avalonia.Styling;
 
 namespace PoeStonks;
 
 public class DisplayHeaderButton : TemplatedControl
 {
+    public static readonly StyledProperty<ICommand> MyCommandProperty =
+        AvaloniaProperty.Register<DisplayHeaderButton, ICommand>(nameof(OnClick));
+
+    public ICommand OnClick
+    {
+        get => GetValue(MyCommandProperty);
+        set => SetValue(MyCommandProperty, value);
+    }
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -25,15 +39,12 @@ public class DisplayHeaderButton : TemplatedControl
 
     private void RotateImage(Image image)
     {
-        Console.WriteLine("fail 1");
         var rotationTransform = image.RenderTransform as RotateTransform;
-        Console.WriteLine("fail 2");
         if (rotationTransform == null)
         {
             rotationTransform = new RotateTransform {Angle = 0};
             image.RenderTransform = rotationTransform;
         }
-        Console.WriteLine("fail 3");
         rotationTransform.Angle = (rotationTransform.Angle + 180);
     }
 }

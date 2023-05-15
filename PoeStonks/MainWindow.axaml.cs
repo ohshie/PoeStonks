@@ -1,9 +1,11 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using DynamicData;
+using Microsoft.EntityFrameworkCore.Storage;
 using PoeStonks.AllItemsDisplay;
 using PoeStonks.Db;
 using PoeStonks.PoeNinja;
@@ -34,8 +36,7 @@ public partial class MainWindow : Window
         DisplayItemsUrls.ItemsSource = ItemsUrl;
         DisplayItemIcons.ItemsSource = ItemsPicturesUrl;
         DisplayItemsDivineValue.ItemsSource = ItemsDivineValues;
-        
-        PopulateDisplayWithDefaultValues();
+
         Logger.LogMessageOutput ="Ready";
     }
     
@@ -96,7 +97,11 @@ public partial class MainWindow : Window
             ItemsDivineValues.Add(Math.Round(poeItem.ChaosEquivalent/currentDivinePrice,2));
         } 
     }
-    
+
+    private void SortByCategory(object? sender, RoutedEventArgs e)
+    {
+        
+    }
     private void OpenUrlInBrowser(string url)
     {
         try
